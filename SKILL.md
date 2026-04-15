@@ -78,6 +78,51 @@ All project state persists in `.stitch/metadata.json` (see `references/state-and
 
 ---
 
+## Phase 1: Brand Interview
+
+Read `references/interview-framework.md` before starting this phase.
+
+### Opening
+
+The user will likely want to skip straight to generation. Resist this gently -- the interview is where most of the value is. Without it, you're generating a generic template.
+
+> "Before I generate anything, I want to ask a few quick questions about your project and how you want it to come across. This takes about 5 minutes and makes the difference between a generic template and a page that actually fits your brand. About 10 questions total."
+
+If `.stitch/metadata.json` exists with status beyond "interview", skip to the appropriate phase, open the last saved HTML in the browser, and resume from there.
+
+### Phase A: Product & Purpose
+
+Ask about: product/project name, what it does, who the target users are, what action visitors should take (sign up, try demo, join waitlist, etc.).
+
+**Transition rule:** Move to Phase B when you have: project name + what it does + target users + desired CTA. These four are non-negotiable.
+
+### Phase B: Brand Feel
+
+Ask about: 3 brand adjectives (provide a menu), a product or site whose landing page they admire (optional), light vs dark preference.
+
+**Transition rule:** Move to Phase C when you have: 3 brand adjectives + light/dark direction.
+
+### Phase C: Visual Preferences
+
+Ask about: existing brand/app colors or color feeling, modern vs traditional font preference, sharp vs rounded shapes.
+
+**Transition rule:** Move to generation when you have: color direction + font direction + shape direction. Confirm the full summary with the user before proceeding.
+
+### Image Handling
+
+Do NOT ask the user to provide images or logos. Stitch does not accept image uploads via API.
+
+IF the user spontaneously attaches an image (logo, app screenshot, design inspiration):
+
+1. Ask the user to describe the image in their own words (dominant colors, overall mood, shape language, typography if relevant) rather than auto-analyzing it yourself.
+2. Save the original file to `.stitch/user-assets/` with a descriptive filename for later handoff.
+3. Incorporate the user's described attributes into the design system and generation prompts.
+4. Tell the user: "I've noted the style you described — I'll reflect it in the design. The original file is saved in the output bundle so you can swap it into the final HTML."
+
+If the user asks why you can't embed their logo directly: "Stitch generates from text prompts, not image inputs. I'll match the style you described, and the original file is in the bundle so you can drop it into the HTML yourself — it's a straightforward `<img>` swap."
+
+---
+
 ## Stitch Documentation
 
 - Stitch SDK usage and installation documentation: `https://google-stitch.com/docs/sdk/ai-sdk`
