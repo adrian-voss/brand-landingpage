@@ -162,6 +162,65 @@ Map interview answers to Stitch design system parameters:
 
 ---
 
+## Phase 3: Generate & Review Loop
+
+This is the core workflow. The loop runs until the user approves the design.
+
+### First Generation
+
+1. Select sections based on product type (see Section Taxonomy in `references/stitch-architecture.md`).
+2. Craft the generation prompt using the template from `references/stitch-architecture.md`.
+3. Call `generate_screen_from_text` with `deviceType: DESKTOP`.
+4. Generation takes 1-3 minutes. Do NOT retry if it seems slow.
+5. Save the HTML output returned by your Stitch SDK call into `.stitch/designs/` using a versioned filename: `desktop-v1.html` for the first generation, `desktop-v2.html` for the next iteration, and so on. Use the same convention for mobile (`mobile-v1.html`, `mobile-v2.html`). Use the SDK's response-handling pattern to retrieve the output — don't perform arbitrary HTTP fetches.
+6. **Open the saved HTML file in the user's browser** so they can see the design at full fidelity. Use `open` (macOS), `xdg-open` (Linux), or `start` (Windows, via `cmd /c start`). If none work in the current environment, tell the user the file path.
+7. Save the screen ID to `.stitch/metadata.json` under `screens.desktop.current` and append to `screens.desktop.history`.
+
+### Presenting Results
+
+After every generation, edit, or variant selection:
+
+1. Save the updated HTML from the Stitch SDK response and open the local file in the browser.
+2. Briefly orient the user: "I've opened the latest version in your browser. Hero section at top with the headline and CTA, then {describe sections}, footer at the bottom."
+3. Ask the three feedback questions from `references/interview-framework.md`:
+   - "What's your gut reaction in the first 5 seconds?"
+   - "Does this feel like YOUR product?"
+   - "Is there anything that feels wrong, missing, or not quite right?"
+
+Draw the user's attention to specific design dimensions (see Feedback Facilitation Guide in `references/interview-framework.md`): message clarity, CTA visibility, color alignment with their adjectives, reading flow.
+
+### Feedback Translation
+
+| Feedback pattern | Action | Tool |
+|-----------------|--------|------|
+| Specific targeted change ("move X", "change the headline to Y") | Direct edit | `edit_screens` |
+| General dissatisfaction ("I don't like it", "it's boring") | Explore alternatives | `generate_variants` with EXPLORE (2-3 variants) |
+| Partial approval ("love the layout, hate the colors") | Targeted variant | `generate_variants` with specific aspects only |
+| Wants to compare ("show me some options") | Broad exploration | `generate_variants` with 3 variants, EXPLORE |
+| "Something totally different" | Full rethink | `generate_variants` with REIMAGINE |
+| "I liked the earlier version better" | Rollback | Re-fetch from `screens.desktop.history` |
+| CSS-level feedback ("needs more padding", "font too small") | Translate to design intent | `edit_screens` with design-level instruction |
+| Explicit approval ("looks good", "ship it") | Exit loop | Proceed to mobile question, then Phase 4 |
+
+When the user gives feedback in implementation terms (CSS, pixels, Tailwind classes), acknowledge their intent but translate to design language for Stitch.
+
+### Showing Variants
+
+Save the HTML from each Stitch variant response as `desktop-vN-option-a.html`, `desktop-vN-option-b.html`, `desktop-vN-option-c.html` in `.stitch/designs/` (where `N` is the current iteration number). Open all of them locally so the user can compare in separate tabs. Note one distinguishing feature each. Ask: "Which direction do you prefer? Or should I combine elements from different options?" Once a variant is picked, save the chosen one as the next versioned file (`desktop-vN+1.html`) and continue the loop from there.
+
+### Loop Guardrails
+
+- **Always open the updated HTML** in the browser after any edit or variant selection.
+- **Update metadata** after every state change. Never discard previous versions.
+- **After 3 rounds** of positive feedback: "This is looking solid. Keep iterating or ship it and refine later?"
+- **After 5 rounds**: "What's the single most important change left?"
+
+### Mobile Variant
+
+After desktop approval, offer: "Want me to generate a mobile layout too?" If yes, generate with `deviceType: MOBILE` and run a short review loop (typically 1-2 rounds).
+
+---
+
 ## Stitch Documentation
 
 - Stitch SDK usage and installation documentation: `https://google-stitch.com/docs/sdk/ai-sdk`
