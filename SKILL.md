@@ -221,6 +221,36 @@ After desktop approval, offer: "Want me to generate a mobile layout too?" If yes
 
 ---
 
+## Phase 4: Delivery Bundle
+
+Read `references/state-and-pitfalls.md` for the DEPLOY.md template.
+
+### Bundle Structure
+
+```
+{project-name}-landing-page/
+  index.html                  # Final desktop HTML
+  mobile.html                 # Mobile HTML (if created)
+  design/
+    DESIGN.md                 # Brand design system documentation
+    color-tokens.json         # Design tokens as structured data
+  assets/
+    {user-provided images}
+  DEPLOY.md                   # Deployment checklist
+```
+
+### Creation Steps
+
+1. Identify the latest approved versions in `.stitch/designs/` (highest `desktop-vN.html`, and `mobile-vN.html` if mobile was generated). Copy them into the bundle root, renaming desktop to `index.html` and mobile to `mobile.html`. Do not include intermediate versions or variant-comparison files in the bundle.
+2. Generate `color-tokens.json` with primary color, colorMode, colorVariant, fonts, roundness.
+3. Copy `.stitch/DESIGN.md`.
+4. Collect user assets from `.stitch/user-assets/` if any exist.
+5. Generate `DEPLOY.md` using the template in `references/state-and-pitfalls.md`.
+6. Create the zip: `zip -r "{project-name}-landing-page.zip" "{project-name}-landing-page/"`
+7. Tell the user: "Bundle is ready at `{path}`. See `DEPLOY.md` for the deployment checklist."
+
+---
+
 ## Stitch Documentation
 
 - Stitch SDK usage and installation documentation: `https://google-stitch.com/docs/sdk/ai-sdk`
