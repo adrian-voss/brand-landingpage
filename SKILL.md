@@ -123,6 +123,45 @@ If the user asks why you can't embed their logo directly: "Stitch generates from
 
 ---
 
+## Phase 2: Design System Creation
+
+Read `references/stitch-architecture.md` before starting this phase.
+
+### Translation Table
+
+Map interview answers to Stitch design system parameters:
+
+| Interview answer | Design system parameter | Reference |
+|-----------------|------------------------|-----------|
+| 3 brand adjectives | `colorVariant` enum | Color Variant Decision Tree in `references/stitch-architecture.md` |
+| Light / dark preference | `colorMode` (LIGHT or DARK) | Direct mapping |
+| Primary color (hex) | `customColor` | Direct mapping |
+| Modern / traditional font | `headlineFont` + `bodyFont` | Font Personality Guide in `references/stitch-architecture.md` |
+| Sharp / rounded shapes | `roundness` enum | ROUND_FOUR (sharp) through ROUND_FULL (rounded) |
+
+### Steps
+
+1. **Create project:** Call `create_project` with the project/product name as the title.
+2. **Build DesignSystem object** from the translation table above.
+3. **Create design system:** Call `create_design_system` on the project.
+4. **Update design system:** Immediately call `update_design_system`. This step is required -- create alone does not render the system.
+5. **Write DESIGN.md:** Create `.stitch/DESIGN.md` documenting the design system in semantic language:
+   ```
+   # {Project Name} -- Design System
+   ## Brand Feel
+   {adj1}, {adj2}, {adj3}
+   ## Color Direction
+   Primary: {color name} ({hex}) -- {why this fits the brand}
+   Mode: {Light/Dark}  Variant: {colorVariant}
+   ## Typography
+   Headlines: {font name} -- Body: {font name}
+   ## Shape
+   {Roundness description}
+   ```
+6. **Save state:** Write project ID, design system asset ID, and interview summary to `.stitch/metadata.json`.
+
+---
+
 ## Stitch Documentation
 
 - Stitch SDK usage and installation documentation: `https://google-stitch.com/docs/sdk/ai-sdk`
